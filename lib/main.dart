@@ -116,18 +116,18 @@ void onStart() {
     if (!(await service.isServiceRunning())
   ) timer.cancel();
     var notifer="You are Safe..";
-    var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
-    http.MultipartRequest request = new http.MultipartRequest("GET", getUri);
-    http.StreamedResponse response = await request.send();
-    print('Response: ');
-    var responsibility=await response.stream.bytesToString();
-    print(responsibility);
-    print(
-        '********************************************************************************************');
-    if (responsibility=='"Yes"')
-      {
-        notifer="You are at risk of COVID!!";
-      }
+    // var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
+    // http.MultipartRequest request = new http.MultipartRequest("GET", getUri);
+    // http.StreamedResponse response = await request.send();
+    // print('Response: ');
+    // var responsibility=await response.stream.bytesToString();
+    // print(responsibility);
+    // print(
+    //     '********************************************************************************************');
+    // if (responsibility=='"Yes"')
+    //   {
+    //     notifer="You are at risk of COVID!!";
+    //   }
 if (1==1)
     {
   service.setNotificationInfo(
@@ -866,51 +866,31 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Colors.white),
                             ),
                             onPressed: () async {
-                              var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
-
-                              http.MultipartRequest request = new http.MultipartRequest("GET", getUri);
-
-
-                              http.StreamedResponse response = await request.send();
-
-                              print('********************************************************************************************');
-                              print('Status Code: ');
-                              // print(response.statusCode);
-                              // var dd = response.body;
-                              // print(response.toString());
-                              print('********************************************************************************************');
-
-                              print('Response: ');
-                              var responsibility=await response.stream.bytesToString();
-                              // Map jj = json.decode(response) as Map;
-
-                              // print(" HELLO: ${jj}" );
-                              print(responsibility);
-                              print(
-                                  '********************************************************************************************');
-
-                              if (responsibility=='"Yes"')
-                                {
-                                  AwesomeNotifications().createNotification(
-                                      content: NotificationContent(
-                                          id: 10,
-                                          channelKey: 'basic_channel2',
-                                          title: 'Alert!',
-                                          body: 'You are at risk of COVID-19'
-                                      )
-                                  );
-                                }
-                              else
-                              {
-                                AwesomeNotifications().createNotification(
-                                    content: NotificationContent(
-                                        id: 9,
-                                        channelKey: 'basic_channel',
-                                        title: 'Relax!',
-                                        body: 'You are safe'
-                                    )
-                                );
-                              }
+                              await manual_check_bt_status2();
+                              // String iden=await manual_check_bt_status();
+                              // //
+                              // if (iden=='1')
+                              //   {
+                              //     AwesomeNotifications().createNotification(
+                              //         content: NotificationContent(
+                              //             id: 10,
+                              //             channelKey: 'basic_channel2',
+                              //             title: 'Alert!',
+                              //             body: 'You are at risk of COVID-19'
+                              //         )
+                              //     );
+                              //   }
+                              // else
+                              // {
+                              //   AwesomeNotifications().createNotification(
+                              //       content: NotificationContent(
+                              //           id: 9,
+                              //           channelKey: 'basic_channel',
+                              //           title: 'Relax!',
+                              //           body: 'You are safe'
+                              //       )
+                              //   );
+                              // }
                             },
                           ), //BoxedDecoration
                         ) //Container
@@ -1582,13 +1562,28 @@ Future<void> bt_data_upload(path) async {
 
 }
 
+Future<void> manual_check_bt_status2()  async {
+  final response =
+  await http.get(Uri.parse('http://52.74.221.135:5000/check_me/furqan'));
+  print("Status code:");
+  print(response.statusCode);
+
+  if (response.statusCode == 200) {
+    print(".......................Uploading...........................");
+    print("Response body is: ${response.body}");
+    final jsonBody = json.decode(response.body) as List;
+    print("Json Body: ${jsonBody}");
+    print("......................End of Upload..........................");
+  } else {
+
+    throw Exception('Failed to load album');
+  }
+}
+
 
 
 
 Future<String> manual_check_bt_status() async {
-
-  // var bytes=path.readAsBytesSync();
-  // var postUri = Uri.http('http://13.229.160.192:5000', '/file-upload');
 
   var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
 
@@ -1613,11 +1608,11 @@ Future<String> manual_check_bt_status() async {
   print(
       '********************************************************************************************');
 
-  if (responsibility == "Yes") {
+  if (responsibility == '"Yes"') {
 
     return '1';
   }
-  else if (responsibility == "No")
+  else if (responsibility == '"No"')
   {
     return '0';
   }
