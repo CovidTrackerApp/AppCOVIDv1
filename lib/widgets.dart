@@ -1,7 +1,10 @@
+import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:where/main.dart';
 import 'Pages/Sixth/SixthHomePage.dart';
+import 'dart:async';
+import 'dart:io';
 
 import 'Pages/Fifth/FifthHomeScreen.dart';
 import 'Pages/Fourth/FourthHomeScreen.dart';
@@ -191,8 +194,8 @@ class _PictureFormState extends State<PictureForm> {
 
   @protected
   Future runInitTasks() async {
-    String x = await getStringValuesSF();
-    if (0==1) {
+    int tellme=await _sessionmaintainer();
+    if (tellme==1) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return MyApp();
       }));
@@ -276,4 +279,23 @@ getStringValuesSF() async {
   //Return String
   String stringValue = prefs.getString('stringValue');
   return stringValue;
+}
+
+
+Future<int> _sessionmaintainer() async {
+  String text;
+  int indicator;
+  try {
+    String path = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+    String fullPath = "$path/indicator.txt";
+    final File file = File(fullPath);
+    text = await file.readAsString();
+    // debugPrint("A file has been read at ${directory.path}");
+    indicator = 1;
+  } catch (e) {
+    debugPrint("Couldn't read file");
+    indicator = 0;
+  }
+  return indicator;
 }

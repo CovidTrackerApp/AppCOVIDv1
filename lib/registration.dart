@@ -18,8 +18,9 @@ import 'package:ext_storage/ext_storage.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:csv/csv.dart';
-
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
+import 'package:convert/convert.dart';
 
 final imgUrl =
     "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/txt/dummy.txt";
@@ -427,6 +428,9 @@ class _RegFormState extends State<RegForm> {
 
                         //************************Response Data**************************************
                         int dd=await _readIndicator();
+                        String myuuid=await pleasegetmeuuid();
+
+
                         if (dd==0) {
                           final signup_response = await signup(myController_username.text, myController_password.text, myController_fullname.text,myController_phonenumber.text,myController_email.text,myController_age.text,_currentCat);
                           debugPrint(myController_age.text);
@@ -687,3 +691,23 @@ showAlertDialog3(BuildContext context) {
     },
   );
 }
+Future<String> pleasegetmeuuid() async
+{
+  var uuid = Uuid();
+  String varuuid;
+  int _x=2;
+  uuid.v1(options: {
+    'node': [0x01, 0x23, 0x45, 0x67, 0x89, 0xab],
+    'clockSeq': 0x1234,
+    'mSecs': new DateTime.utc(2011,11,01).millisecondsSinceEpoch,
+    'nSecs': 5678
+  });
+  String checker_uid=uuid.v1().toString();
+  List<int> bytes_uuid = utf8.encode(checker_uid);
+  print(bytes_uuid);
+  var result=hex.encode(bytes_uuid);
+  return result.toString();
+}
+
+
+

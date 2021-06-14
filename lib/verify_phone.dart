@@ -153,6 +153,9 @@ class _VerifyFormState extends State<VerifyForm> {
                         if (login_result.toString() == "0") {
                           _writeIndicator(1.toString());
                           writeToken(login_result.toString());
+                          // first get the uuid from response from post request of OTP Verification
+                          //pleasewritemyuuid(String text);
+                          pleasewritemyusername(widget.uname);
                           Navigator.push(context,
                               new MaterialPageRoute(builder: (context) {
                             return new MyApp();
@@ -276,4 +279,25 @@ showAlertDialog(BuildContext context, uuname) {
       return alert;
     },
   );
+}
+
+
+pleasewritemyuuid(String text) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('myuuid', text);
+  debugPrint(
+      "*********************************************************************************************");
+  debugPrint("Your uuid ,i.e. ${text} has been stored in local storage");
+  debugPrint(
+      "*********************************************************************************************");
+}
+
+pleasewritemyusername(String text)async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('myusername', text);
+  debugPrint(
+      "*********************************************************************************************");
+  debugPrint("Your username ,i.e. ${text} has been stored in local storage");
+  debugPrint(
+      "*********************************************************************************************");
 }

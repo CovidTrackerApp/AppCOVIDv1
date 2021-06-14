@@ -34,6 +34,7 @@ import 'package:flutter_blue_beacon/flutter_blue_beacon.dart';
 import 'app_broadcasting.dart';
 import 'dart:convert';
 import 'package:cron/cron.dart';
+import 'package:convert/convert.dart';
 
 final imgUrl =
     "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/csv/dummy.csv";
@@ -41,6 +42,9 @@ final imgUrl =
 var dio = Dio();
 int i = 0;
 int y = 0;
+
+int retentor=0;
+String uuIdier="";
 
 Future<void> startService()
 async {
@@ -115,7 +119,7 @@ void onStart() {
     // int response_from_server = await manual_check_bt_status();
     if (!(await service.isServiceRunning())
   ) timer.cancel();
-    var notifer="You are Safe..";
+    var notifer="App is Working..";
     // var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
     // http.MultipartRequest request = new http.MultipartRequest("GET", getUri);
     // http.StreamedResponse response = await request.send();
@@ -132,12 +136,14 @@ if (1==1)
     {
   service.setNotificationInfo(
   title: notifer,
-  content: "Updated at ${DateTime.now()}",
+  // content: "Updated at ${DateTime.now()}",
+    content: "Remember to Wear Mask",
+
   );
 
-  service.sendData(
-  {"current_date": DateTime.now().toString()},
-  );
+  // service.sendData(
+  // {"current_date": DateTime.now().toString()},
+  // );
 
 
 }
@@ -662,6 +668,27 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     getPermission();
+
+
+    // //********************************Wasay************************************
+    // if (retentor==0)
+    // {
+    //
+    //   String god_myuuid=pleasegetmyuuid();
+    //   if (god_myuuid==null)
+    //   {
+    //     print("Oh My!!! I think this just got printed......................................");
+    //     pleasewritemyuuid();
+    //     String god_myuuid=pleasegetmyuuid();
+    //     setState(() {
+    //       retentor=1;
+    //       String uuIdier=god_myuuid;
+    //     });
+    //   }
+    //
+    // }
+    //*******************************Wasay**************************************
+
     //   startServiceInPlatform();
     //downloadcsvfile();
 
@@ -866,31 +893,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Colors.white),
                             ),
                             onPressed: () async {
-                              await manual_check_bt_status2();
-                              // String iden=await manual_check_bt_status();
-                              // //
-                              // if (iden=='1')
-                              //   {
-                              //     AwesomeNotifications().createNotification(
-                              //         content: NotificationContent(
-                              //             id: 10,
-                              //             channelKey: 'basic_channel2',
-                              //             title: 'Alert!',
-                              //             body: 'You are at risk of COVID-19'
-                              //         )
-                              //     );
-                              //   }
-                              // else
-                              // {
-                              //   AwesomeNotifications().createNotification(
-                              //       content: NotificationContent(
-                              //           id: 9,
-                              //           channelKey: 'basic_channel',
-                              //           title: 'Relax!',
-                              //           body: 'You are safe'
-                              //       )
-                              //   );
-                              // }
+
+                              String mysuername_bro=await getmyusername();
+
+                              await manual_check_bt_status2(mysuername_bro);
+
+                              String iden=await manual_check_bt_status(mysuername_bro);
+                              //
+                              if (iden=='1')
+                                {
+                                  AwesomeNotifications().createNotification(
+                                      content: NotificationContent(
+                                          id: 10,
+                                          channelKey: 'basic_channel2',
+                                          title: 'Alert!',
+                                          body: 'You are at risk of COVID-19'
+                                      )
+                                  );
+                                }
+                              else
+                              {
+                                AwesomeNotifications().createNotification(
+                                    content: NotificationContent(
+                                        id: 9,
+                                        channelKey: 'basic_channel',
+                                        title: 'Relax!',
+                                        body: 'You are safe'
+                                    )
+                                );
+                              }
                             },
                           ), //BoxedDecoration
                         ) //Container
@@ -926,38 +957,38 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             onPressed: () {
 
-                              startService();
-                              var cron = new Cron();
-                              cron.schedule(new Schedule.parse('* * * * *'), () async {
-                                AwesomeNotifications().initialize(
-                                  // set the icon to null if you want to use the default app icon
-                                    'resource://drawable/my_splash',
-                                    [NotificationChannel(
-                                        channelKey: 'basic_channel2',
-                                        channelName: 'Basic notifications2',
-                                        channelDescription: 'Notification channel2 for basic tests',
-                                        defaultColor: Colors.red,
-                                        ledColor: Colors.redAccent
-                                    )
-                                    ]
-                                );
-                                print('every minute');
-                                String response_from_server=await manual_check_bt_status();
-                                print("Response response: ${response_from_server}");
-                                if (response_from_server==0)
-                                {
-                                  AwesomeNotifications().createNotification(
-                                      content: NotificationContent(
-                                          id: 10,
-                                          channelKey: 'basic_channel2',
-                                          title: 'Alert!',
-                                          body: 'You are at risk of COVID-19'
-                                      )
-                                  );
-                                }
-
-
-                              });
+                              // startService();
+                              // var cron = new Cron();
+                              // cron.schedule(new Schedule.parse('* * * * *'), () async {
+                              //   AwesomeNotifications().initialize(
+                              //     // set the icon to null if you want to use the default app icon
+                              //       'resource://drawable/my_splash',
+                              //       [NotificationChannel(
+                              //           channelKey: 'basic_channel2',
+                              //           channelName: 'Basic notifications2',
+                              //           channelDescription: 'Notification channel2 for basic tests',
+                              //           defaultColor: Colors.red,
+                              //           ledColor: Colors.redAccent
+                              //       )
+                              //       ]
+                              //   );
+                              //   print('every minute');
+                              //   String response_from_server=await manual_check_bt_status();
+                              //   print("Response response: ${response_from_server}");
+                              //   if (response_from_server==0)
+                              //   {
+                              //     AwesomeNotifications().createNotification(
+                              //         content: NotificationContent(
+                              //             id: 10,
+                              //             channelKey: 'basic_channel2',
+                              //             title: 'Alert!',
+                              //             body: 'You are at risk of COVID-19'
+                              //         )
+                              //     );
+                              //   }
+                              //
+                              //
+                              // });
 
 
                             },
@@ -1033,12 +1064,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SecondRoute()),
-                              );
+                            onPressed: () async{
+                              String cfk=await getmyusername();
+                              print("Here is your damn username");
+                              print(cfk);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => SecondRoute()),
+                              // );
                             },
                           ),
                         ) //Container
@@ -1562,9 +1596,9 @@ Future<void> bt_data_upload(path) async {
 
 }
 
-Future<void> manual_check_bt_status2()  async {
+Future<void> manual_check_bt_status2(String usernamebro)  async {
   final response =
-  await http.get(Uri.parse('http://52.74.221.135:5000/check_me/furqan'));
+  await http.get(Uri.parse('http://52.74.221.135:5000/check_me/${usernamebro}'));
   print("Status code:");
   print(response.statusCode);
 
@@ -1583,9 +1617,9 @@ Future<void> manual_check_bt_status2()  async {
 
 
 
-Future<String> manual_check_bt_status() async {
+Future<String> manual_check_bt_status(String usernamebro) async {
 
-  var getUri = Uri.parse('http://52.74.221.135:5000/check_me/furqan');
+  var getUri = Uri.parse('http://52.74.221.135:5000/check_me/${usernamebro}');
 
   http.MultipartRequest request = new http.MultipartRequest("GET", getUri);
 
@@ -1627,4 +1661,19 @@ Future<void> write_response_from_bt_manual_check(String text) async {
       "A new content,i.e. ${text} has been stored in local storage");
   debugPrint("*********************************************************************************************");
 }
+
+Future<String> getmyusername() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String stringValue = prefs.getString('myusername');
+  return stringValue;
+}
+
+removeToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("pleasemyuuid");
+}
+
+
+
 

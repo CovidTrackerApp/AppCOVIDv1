@@ -4,13 +4,27 @@ import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:convert/convert.dart';
+import 'package:uuid/uuid.dart';
+
+
 
 //transmitter
 Future<void> onPressed() async {
   if (broadcasting) {
     await flutterBeacon.stopBroadcast();
   } else {
-    String uu=await getuuid();
+    //**************Rather Simple************************************
+    String uu=await pleasegetmyuuid();
+    print("My Damn UUID:");
+    print(uu);
+    if (uu==null)
+      {
+        print("O No!!!!.....................................");
+        await pleasewritemyuuid();
+        String uu=await pleasegetmyuuid();
+      }
+
+    //**************Rather Simple************************************
 
     print("***********************************************************");
     print("Hello, this is uuid being broadcasted: ${uu}");
@@ -53,3 +67,40 @@ Future<String> getuuid() async {
   String stringValue = prefs.getString('stringValue');
   return stringValue;
 }
+
+Future<String> pleasegetmyuuid() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String stringValue = prefs.getString('pleasemyuuid');
+  return stringValue;
+}
+
+Future<void> pleasewritemyuuid() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String txter=await pleasegetmeuuid();
+  prefs.setString('pleasemyuuid',txter );
+  debugPrint("*********************************************************************************************");
+  debugPrint(
+      "A new content,i.e. ${txter} has been stored in local storage");
+  debugPrint("*********************************************************************************************");
+}
+
+Future<String> pleasegetmeuuid() async
+{
+  var uuid = Uuid();
+  String varuuid;
+  int _x=2;
+  uuid.v1(options: {
+    'node': [0x01, 0x23, 0x45, 0x67, 0x89, 0xab],
+    'clockSeq': 0x1234,
+    'mSecs': new DateTime.utc(2011,11,01).millisecondsSinceEpoch,
+    'nSecs': 5678
+  });
+  String checker_uid=uuid.v1().toString();
+  List<int> bytes_uuid = utf8.encode(checker_uid);
+  print(bytes_uuid);
+  var result=hex.encode(bytes_uuid);
+  return result.toString();
+}
+
+

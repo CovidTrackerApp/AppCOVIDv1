@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:ext_storage/ext_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -84,24 +85,26 @@ class IBeaconCard extends StatelessWidget {
     print(a);
 
     /// We require the initializers to run after the loading screen is rendered
-    Timer(Duration(seconds: 20), () {
+    Timer(Duration(seconds: 20), () async{
+      String myuuid_bro=await getmyuuid();
+      String myusername_bro=await getmyusername();
       print("Yeah, this line is printed after 3 seconds");
       // var disty=double.parse(b);
-      csvgenerator("furqan",a.toString(),b,"84887230ca9311eb9234677e39cede1e");
+      csvgenerator(myusername_bro,a.toString(),b,myuuid_bro);
     });
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t)
-    async {
-      WidgetsFlutterBinding.ensureInitialized();
-      final appDocumentDir = await getApplicationDocumentsDirectory();
-      print(appDocumentDir.path);
-      Hive
-        ..init(appDocumentDir.path)
-        ..registerAdapter(DaterAdapter());
-      // await updatetable(a.toString(),b.toString(),"123",1);
-      print("Done!!");
-
-    }
-    );
+    // timer = Timer.periodic(Duration(seconds: 1), (Timer t)
+    // async {
+    //   WidgetsFlutterBinding.ensureInitialized();
+    //   final appDocumentDir = await getApplicationDocumentsDirectory();
+    //   print(appDocumentDir.path);
+    //   Hive
+    //     ..init(appDocumentDir.path)
+    //     ..registerAdapter(DaterAdapter());
+    //   // await updatetable(a.toString(),b.toString(),"123",1);
+    //   print("Done!!");
+    //
+    // }
+    // );
 
 
 
@@ -264,7 +267,7 @@ void csvgenerator(String uname, String beaconid_others, double distance,String u
       // List<dynamic> row = [];
       var now = new DateTime.now();
       var formatter = new DateFormat('yyyy-MM-dd');
-      var time = DateFormat('kk:mm:s').format(now);
+      var time = DateFormat('HH:mm:ss').format(now);
       var date = formatter.format(now);
       // row.add(date);
       // row.add(time);
@@ -284,7 +287,7 @@ void csvgenerator(String uname, String beaconid_others, double distance,String u
     // List<dynamic> row = [];
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
-    var time = DateFormat('kk:mm:s').format(now);
+    var time = DateFormat('HH:mm:ss').format(now);
     var date = formatter.format(now);
     // row.add(date);
     // row.add(time);
@@ -310,3 +313,17 @@ async {
   print('bTdat${i}:Done!!!!!!!!!!!!!!!!!!!!!!!!');
 }
 
+
+Future<String> getmyuuid() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String stringValue = prefs.getString('myuuid');
+  return stringValue;
+}
+
+Future<String> getmyusername() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String stringValue = prefs.getString('myusername');
+  return stringValue;
+}
