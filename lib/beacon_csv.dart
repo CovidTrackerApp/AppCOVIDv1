@@ -87,7 +87,7 @@ class IBeaconCard extends StatelessWidget {
     /// We require the initializers to run after the loading screen is rendered
     Timer(Duration(seconds: 20), () async{
       String myuuid_bro=await pleasegetmyuuid();
-      String myusername_bro=await getmyusername();
+      String myusername_bro=await getmytoken();
       print("Yeah, this line is printed after 3 seconds");
       // var disty=double.parse(b);
       csvgenerator(myusername_bro,a.toString(),b,myuuid_bro);
@@ -321,10 +321,10 @@ Future<String> getmyuuid() async {
   return stringValue;
 }
 
-Future<String> getmyusername() async {
+Future<String> getmytoken() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   //Return String
-  String stringValue = prefs.getString('myusername');
+  String stringValue = prefs.getString('tokyboy');
   return stringValue;
 }
 

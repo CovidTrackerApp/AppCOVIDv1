@@ -48,13 +48,13 @@ class _VerifyFormState extends State<VerifyForm> {
   }
 
   verify(username, otp) async {
-    var url = Uri.http('46.137.221.124:5000', '/verifyotp');
+    var url = Uri.http('52.74.221.135:5000', '/verifyOTP');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: convert.jsonEncode(<String, dynamic>{
-          "username": username,
+          "uname": username,
           "otp": otp,
         }));
     if (response.statusCode == 200) {
@@ -62,7 +62,12 @@ class _VerifyFormState extends State<VerifyForm> {
       var itemCount = jsonResponse['token'];
       if (itemCount != null) {
         print('Here is the returned token: $itemCount.');
-        print(jsonResponse["status"]);
+        print("u_beaconid:");
+        print(jsonResponse['u_beaconid']);
+        pleasewritemyuuid(jsonResponse['u_beaconid']);
+        print("Token:");
+        print(jsonResponse['token']);
+        pleasewritemytoken(jsonResponse['token']);
         return 0;
       } else {
         // print('Here is the returned token: $itemCount.');
@@ -152,7 +157,7 @@ class _VerifyFormState extends State<VerifyForm> {
                         //***********************************************************************************
                         if (login_result.toString() == "0") {
                           _writeIndicator(1.toString());
-                          writeToken(login_result.toString());
+                          // writeToken(login_result.toString());
                           // first get the uuid from response from post request of OTP Verification
                           //pleasewritemyuuid(String text);
                           pleasewritemyusername(widget.uname);
@@ -298,6 +303,15 @@ pleasewritemyusername(String text)async {
   debugPrint(
       "*********************************************************************************************");
   debugPrint("Your username ,i.e. ${text} has been stored in local storage");
+  debugPrint(
+      "*********************************************************************************************");
+}
+pleasewritemytoken(String text)async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('tokyboy', text);
+  debugPrint(
+      "*********************************************************************************************");
+  debugPrint("Your token ,i.e. ${text} has been stored in local storage");
   debugPrint(
       "*********************************************************************************************");
 }

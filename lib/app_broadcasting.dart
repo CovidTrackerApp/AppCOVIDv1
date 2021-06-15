@@ -89,7 +89,7 @@ Future<String> pleasegetmeuuid() async
 {
   var uuid = Uuid();
   String varuuid;
-  int _x=2;
+  // int _x=2;
   uuid.v1(options: {
     'node': [0x01, 0x23, 0x45, 0x67, 0x89, 0xab],
     'clockSeq': 0x1234,
@@ -99,7 +99,12 @@ Future<String> pleasegetmeuuid() async
   String checker_uid=uuid.v1().toString();
   List<int> bytes_uuid = utf8.encode(checker_uid);
   print(bytes_uuid);
-  var result=hex.encode(bytes_uuid);
+  List<int> chunk_bytes_uuid = [];
+  for (var i = 0; i < 16; i += 1) {
+    chunk_bytes_uuid.add(bytes_uuid[i]);
+  }
+  var result=hex.encode(chunk_bytes_uuid);
+
   return result.toString();
 }
 

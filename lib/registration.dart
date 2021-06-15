@@ -42,8 +42,11 @@ class RegForm extends StatefulWidget {
 class _RegFormState extends State<RegForm> {
   final _minpad = 5.0;
   var _currentCat = 'Male';
+  double _loady=0.0;
+  var _currentStat = 'Healthy';
   // var _cat = ['Citizen', 'Health Personal', 'Policy Maker'];
   var _cat = ['Male', 'Female'];
+  var _stat = ['Healthy', 'Exposed', 'Infected'];
   final myController_username = TextEditingController();
   final myController_password = TextEditingController();
   final myController_phonenumber = TextEditingController();
@@ -53,20 +56,23 @@ class _RegFormState extends State<RegForm> {
 
   final cryptor = new PlatformStringCryptor();
 
-  signup(username, password, fullname,  contact_num, email, age, gender) async {
-    var url = Uri.http('46.137.221.124:5000', '/register');
+  signup(username, password, fullname,  contact_num, email, age, gender,status,u_beaconid) async {
+    var url = Uri.http('52.74.221.135:5000', '/register');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          "username": username,
+          "uname": username,
           "password": password,
-          "fname" : fullname,
-          "contact_num": contact_num,
+          "ph_no":contact_num,
           "email": email,
           "age": age,
-          "gender": gender
+          "gender": gender,
+          "status":status,
+          "u_beaconid":u_beaconid,
+          "fname":fullname
+
         }));
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
@@ -169,6 +175,18 @@ class _RegFormState extends State<RegForm> {
         //margin: EdgeInsets.all(_minpad * 2),
           child: Column(
             children: <Widget>[
+              new Opacity(opacity: _loady, child: new Padding(
+                  padding: const EdgeInsets.only(
+                      left: 270.0,top:80.0
+                  ),
+                  child:SizedBox(
+                    height: 10.0,
+                    width: 10.0,
+                    child:CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          Colors.blue),
+                    ),
+                  ))),
               getImageAsset(),
 
               Padding(
@@ -195,16 +213,54 @@ class _RegFormState extends State<RegForm> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0))),
                   )),
+
               Padding(
                   padding: EdgeInsets.only(top: _minpad, bottom: _minpad,left: _minpad,right: _minpad),
-                  child: TextField(
-                    controller: myController_fullname,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        hintText: 'First, middle and last name',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0))),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          // child: Padding(
+                            padding:
+                            EdgeInsets.only(top: _minpad, bottom: _minpad),
+                            child: TextField(
+                              controller: myController_fullname,
+                              keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                  labelText: 'Full Name',
+                                  hintText: 'First, middle and last name',
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5.0))),
+                            )),
+                      ),
+                      Container(
+                        width: _minpad * 2,
+                      ),
+                      Container(
+                          width: _minpad * 30,
+                          // child:Expanded(
+                          child: DropdownButton<String>(
+                              hint: Text('Status'),
+                              icon: const Icon(Icons.healing),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.deepPurple),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              items: _stat.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              value: _currentStat,
+                              onChanged: (String newValueSelected) {
+                                _onDroDownItemSelected2(newValueSelected);
+                              }))
+                    ],
                   )),
               // Padding(
               //     padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
@@ -244,6 +300,14 @@ class _RegFormState extends State<RegForm> {
                           // child:Expanded(
                           child: DropdownButton<String>(
                               hint: Text('Category'),
+                              icon: const Icon(Icons.person),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.blueGrey),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.blue,
+                              ),
                               items: _cat.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -327,6 +391,7 @@ class _RegFormState extends State<RegForm> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       child: Text('Register'),
                       onPressed: () async {
+
                         //_read();
                         //KEY GENERATION: password of user will be used to generate a random key, in combination with a salt. We have to store salt locally on phone, while password (in original form)
                         //will be stored on server database. In a nutshell, on database, all credentials, except passoword, we be stored on server in encrypted (hased) form
@@ -427,12 +492,22 @@ class _RegFormState extends State<RegForm> {
                         //  debugPrint(currentdat);
 
                         //************************Response Data**************************************
+                        setState(() {
+                          _loady=1.0;
+                        });
                         int dd=await _readIndicator();
+
+                        setState(() {
+                          _loady=0.0;
+                        });
                         String myuuid=await pleasegetmeuuid();
+                        print("Junaid, I generated this UUID:");
+                        print(myuuid);
 
 
                         if (dd==0) {
-                          final signup_response = await signup(myController_username.text, myController_password.text, myController_fullname.text,myController_phonenumber.text,myController_email.text,myController_age.text,_currentCat);
+                          final signup_response = await signup(myController_username.text, myController_password.text, myController_fullname.text,myController_phonenumber.text,myController_email.text,myController_age.text,_currentCat,_currentStat,myuuid);
+
                           debugPrint(myController_age.text);
                           if (myController_username.text=="" || myController_password.text==""|| myController_fullname.text=="" || myController_phonenumber.text=="" || myController_email.text=="" || myController_age.text=="")
                           {
@@ -533,6 +608,11 @@ class _RegFormState extends State<RegForm> {
   void _onDroDownItemSelected(String newValueSelected) {
     setState(() {
       this._currentCat = newValueSelected;
+    });
+  }
+  void _onDroDownItemSelected2(String newValueSelected) {
+    setState(() {
+      this._currentStat = newValueSelected;
     });
   }
 }
@@ -705,7 +785,11 @@ Future<String> pleasegetmeuuid() async
   String checker_uid=uuid.v1().toString();
   List<int> bytes_uuid = utf8.encode(checker_uid);
   print(bytes_uuid);
-  var result=hex.encode(bytes_uuid);
+  List<int> chunk_bytes_uuid = [];
+  for (var i = 0; i < 32; i += 1) {
+    chunk_bytes_uuid.add(bytes_uuid[i]);
+  }
+  var result=hex.encode(chunk_bytes_uuid);
   return result.toString();
 }
 

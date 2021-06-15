@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:where/registration.dart';
 import 'package:where/main.dart';
@@ -32,6 +33,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  double _loady=0.0;
   void getPermission() async {
     print("getPermission");
     Map<PermissionGroup, PermissionStatus> permissions =
@@ -48,15 +50,14 @@ class _LoginFormState extends State<LoginForm> {
 
 
   login(username, password) async {
-    var url = Uri.http('46.137.221.124:5000', '/login');
+    var url = Uri.http('52.74.221.135:5000', '/login');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: convert.jsonEncode(<String, String>{
-          "username": username,
+          "uname": username,
           "password": password,
-          "otp" : "25698"
         }));
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -104,6 +105,18 @@ class _LoginFormState extends State<LoginForm> {
           margin: EdgeInsets.all(_minpad * 2),
           child: Column(
             children: <Widget>[
+              new Opacity(opacity: _loady, child: new Padding(
+                padding: const EdgeInsets.only(
+                  left: 270.0,top:80.0
+                ),
+                child:SizedBox(
+                  height: 10.0,
+                  width: 10.0,
+                child:CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Colors.blue),
+                ),
+              ))),
               getImageAsset(),
               Padding(
                   padding: EdgeInsets.only(top: _minpad, bottom: _minpad),
@@ -160,6 +173,9 @@ class _LoginFormState extends State<LoginForm> {
                       textColor: Theme.of(context).primaryColorLight,
                       child: Text('Login'),
                       onPressed: () async {
+                        setState(() {
+                          _loady=1.0;
+                        });
                         debugPrint("Login is pressed");
 
                         //****************************   Encryption   **********************************************************
@@ -179,6 +195,9 @@ class _LoginFormState extends State<LoginForm> {
 
 //************************************************************************************************
                         final login_result = await login(myController1.text, myController2.text);
+                        setState(() {
+                          _loady=0.0;
+                        });
                         print("login result: ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" + login_result.toString());
 
                         //***********************************************************************************
@@ -214,6 +233,9 @@ class _LoginFormState extends State<LoginForm> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     child: Text('Register'),
                     onPressed: () {
+                      setState(() {
+                        _loady=1.0;
+                      });
                       debugPrint("Signup is pressed");
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {

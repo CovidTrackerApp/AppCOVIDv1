@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:sensors/sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:where/login.dart';
 import 'manual_bt_checker.dart';
 import 'package:http/http.dart' as http;
 
@@ -811,6 +812,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 else if(value=='/logout')
                 {
+                  removeToken();
+                  Navigator.push(context,
+                      new MaterialPageRoute(builder: (context) {
+                        return new LoginForm();
+                      }));
 
                 }
               },
@@ -1065,9 +1071,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Colors.white),
                             ),
                             onPressed: () async{
-                              String cfk=await getmyusername();
-                              print("Here is your damn username");
-                              print(cfk);
+                              await removeToken();
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
@@ -1669,9 +1673,9 @@ Future<String> getmyusername() async {
   return stringValue;
 }
 
-removeToken() async {
+Future<void> removeToken() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove("pleasemyuuid");
+  prefs.remove("tokyboy");
 }
 
 

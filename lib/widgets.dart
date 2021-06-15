@@ -194,17 +194,19 @@ class _PictureFormState extends State<PictureForm> {
 
   @protected
   Future runInitTasks() async {
-    int tellme=await _sessionmaintainer();
-    if (tellme==1) {
+    String tellme=await session_maintainer();
+    print("This is the current status of token");
+    print(tellme);
+    if (tellme==null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return MyApp();
       }));
     } else {
-      final String k1 = await cryptor.generateRandomKey();
-      final String k2 = await cryptor.generateRandomKey();
-
-      print("key1 :" + k1.toString());
-      print("key2 :" + k2.toString());
+      // final String k1 = await cryptor.generateRandomKey();
+      // final String k2 = await cryptor.generateRandomKey();
+      //
+      // print("key1 :" + k1.toString());
+      // print("key2 :" + k2.toString());
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return LoginForm();
       }));
@@ -298,4 +300,12 @@ Future<int> _sessionmaintainer() async {
     indicator = 0;
   }
   return indicator;
+}
+
+
+Future<String> session_maintainer() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String stringValue = prefs.getString('tokyboy');
+    return stringValue;
 }
