@@ -298,7 +298,7 @@ void csvgenerator(String uname, String beaconid_others, double distance,String u
 
     // String csv = const ListToCsvConverter().convert(rows);
     // await Future.delayed(Duration(seconds: 10));
-    f.writeAsString("uname,beaconid_others,date,time,distance,u_beaconid" + '\n',
+    f.writeAsString("token,beaconid_others,date,time,distance,u_beaconid" + '\n',
         mode: FileMode.append, flush: true);
     // for (int i = 0; i < 1000; i++) {}
   }

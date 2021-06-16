@@ -197,7 +197,7 @@ class _PictureFormState extends State<PictureForm> {
     String tellme=await session_maintainer();
     print("This is the current status of token");
     print(tellme);
-    if (tellme==null) {
+    if (tellme!=null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return MyApp();
       }));

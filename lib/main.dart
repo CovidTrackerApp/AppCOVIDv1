@@ -900,11 +900,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             onPressed: () async {
 
-                              String mysuername_bro=await getmyusername();
+                              String mytoken_bro=await getmytoken();
 
-                              await manual_check_bt_status2(mysuername_bro);
+                              // await manual_check_bt_status2(mytoken_bro);
 
-                              String iden=await manual_check_bt_status(mysuername_bro);
+                              String iden=await manual_check_bt_status(mytoken_bro);
+                              print("Here:");
+                              print(iden);
                               //
                               if (iden=='1')
                                 {
@@ -1594,7 +1596,7 @@ Future<void> bt_data_upload(path) async {
   http.StreamedResponse response = await request.send();
 
   print('********************************************************************************************');
-  print('Status Code: ');
+  print('Uploading Status Code: ');
   print(response.statusCode);
   print('********************************************************************************************');
 
@@ -1621,7 +1623,7 @@ Future<void> manual_check_bt_status2(String usernamebro)  async {
 
 
 
-Future<String> manual_check_bt_status(String usernamebro) async {
+Future<dynamic> manual_check_bt_status(String usernamebro) async {
 
   var getUri = Uri.parse('http://52.74.221.135:5000/check_me/${usernamebro}');
 
@@ -1670,6 +1672,13 @@ Future<String> getmyusername() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   //Return String
   String stringValue = prefs.getString('myusername');
+  return stringValue;
+}
+
+Future<String> getmytoken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String stringValue = prefs.getString('tokyboy');
   return stringValue;
 }
 
