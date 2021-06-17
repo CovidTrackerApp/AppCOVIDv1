@@ -34,19 +34,19 @@ class _ResetFormState extends State<ResetForm> {
 
 
   updatepassword(email,newpassword,confirmnewpassword) async {
-    var url = Uri.http('46.137.221.124:5000', '/resetpass');
+    var url = Uri.http('52.74.221.135:5000', '/forgetpass');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: convert.jsonEncode(<String, String>{
           "email": email,
-          "newPassword": newpassword,
-          "confirmPassword": confirmnewpassword
+          "new_password": newpassword,
+          "confirm_password": confirmnewpassword
         }));
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      var itemCount = jsonResponse['Token'];
+      var itemCount = jsonResponse['token'];
       if (itemCount != null) {
         print('Here is the returned token: $itemCount.');
         return 0;

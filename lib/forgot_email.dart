@@ -28,9 +28,8 @@ class _ForgotFormState extends State<ForgotForm> {
   bool _x=false;
 
 
-
   forgotemail(email) async {
-    var url = Uri.http('46.137.221.124:5000', '/sendcode');
+    var url = Uri.http('52.74.221.135:5000', '/sendotpviaemail');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -38,6 +37,10 @@ class _ForgotFormState extends State<ForgotForm> {
         body: convert.jsonEncode(<String, String>{
           "email": email
         }));
+    print("Status Code");
+    print(response.statusCode);
+    print("Json Response");
+    print(convert.jsonDecode(response.body));
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       var itemCount = jsonResponse['status'];
@@ -54,18 +57,21 @@ class _ForgotFormState extends State<ForgotForm> {
       return 2;
     }
   }
-  verify_verification(email,code) async {
-    var url = Uri.http('46.137.221.124:5000', '/verifycodeviaemail');
+
+  verify_verification(email,otp) async {
+    var url = Uri.http('52.74.221.135:5000', '/verifyuserotp');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: convert.jsonEncode(<String, dynamic>{
           "email": email,
-          "code": code
+          "otp": otp
         }));
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
+      print("Yo!!!Response is this:");
+      print(jsonResponse);
       var itemCount = jsonResponse['status'];
       if (itemCount == 200) {
         print('Here is the returned token: $itemCount.');
@@ -153,8 +159,9 @@ class _ForgotFormState extends State<ForgotForm> {
                               child: Text('Send Code'),
                               onPressed: () async{
                                 _onCheckPushed(true);
-                                debugPrint("Next is pressed");
+                                debugPrint("Send Code is pressed");
                                 final login_result = await forgotemail(myController_email.text);
+                                print("OK");
                                 if (login_result.toString()=="2")
                                 {
                                   showAlertDialog(context);
@@ -199,6 +206,7 @@ class _ForgotFormState extends State<ForgotForm> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       child: Text('Next'),
                       onPressed: () async{
+                        //*************************************************************************************************
                         debugPrint("Next is not");
                         final verifyresult = await verify_verification(myController_email.text, int.parse(myController_code.text));
                         if (verifyresult.toString()=="0") {
@@ -214,6 +222,8 @@ class _ForgotFormState extends State<ForgotForm> {
 
                           showAlertDialog2(context);
                         }
+
+                        //*************************************************************************************************
                       },
                       elevation: 20.0,
                     )),),
